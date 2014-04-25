@@ -3,11 +3,11 @@ languages: javascript
 tags: jquery, ajax, json, api, function, loops
 ---
 
-# Flickr API
+# Flickr Image Search
 
 ## Description
 
-This lab asks that you write the jQuery/JavaScript neccesary to gather the users search term they type from the input field in index.html and use the serach term to query the Flicker API and append the search results that are returned as JSON into the index,html display feed element showing the picture results.
+Work in teams to write the jQuery/JavaScript neccesary to gather the users search term they type from the input field in index.html and use the search term to query the Flicker API and append the search results that are returned as JSON into the index.html display feed element showing the matching picture results.
 
 ## Instructions
 
