@@ -20,7 +20,7 @@ app.Search = function (keyword, view) {
   this.keyword = keyword;
   this.view = view;
   this.imageCollection = [];
-  this.constructor.all.push(this);
+  this.constructor.all.push(this); // this isn't neccessary but its fun to see a record of all searches from the console.
 };
 app.Search.prototype.apiEndpoint = function () {
   return 'https://api.flickr.com/services/rest/?format=json&method=flickr.photos.search&api_key=2fd41b49fedfd589dc265350521ab539&tags='+this.keyword+'&jsoncallback=?';
