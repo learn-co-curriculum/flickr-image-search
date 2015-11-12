@@ -1,76 +1,74 @@
+'use strict';
+
+var app = {};
+
+// Image Model
+
+app.Image = function (farm, server, id, secret) {
+  this.farm = farm;
+  this.server = server;
+  this.id = id;
+  this.secret = secret;
+  this.url = 'http://farm'+this.farm+'.staticflickr.com/'+this.server+'/'+this.id+'_'+this.secret;
+  this.imageElement = '<img src="'+this.url+'_s.jpg" alt="fancy-gallery">';
+  this.linkElement = '<a href="'+this.url+'.jpg" rel="fancy-gallery">'+this.imageElement+'</a>';
+};
+
+// Search Model
+
+app.Search = function (keyword, view) {
+  this.keyword = keyword;
+  this.view = view;
+  this.imageCollection = [];
+  this.constructor.all.push(this);
+};
+app.Search.prototype.apiEndpoint = function () {
+  return 'https://api.flickr.com/services/rest/?format=json&method=flickr.photos.search&api_key=2fd41b49fedfd589dc265350521ab539&tags='+this.keyword+'&jsoncallback=?';
+};
+app.Search.prototype.getData = function () {
+  var self = this;
+  $.getJSON(self.apiEndpoint(), function (json) {
+    console.log(json); //see if results came in...
+    $.each(json.photos.photo, function(i,photo) {
+      var image = new app.Image(photo.farm, photo.server, photo.id, photo.secret);
+      self.imageCollection.push(image);
+      self.view.appendImage(image);
+    });
+  });
+};
+app.Search.all = [];
+
+// Search View
+
+app.SearchView = function () {
+  this.listen();
+};
+app.SearchView.prototype.el = {
+  $keyword: $('#keyword'),
+  $feed   : $('#feed'),
+  $search : $('#search')
+};
+app.SearchView.prototype.createSearch = function () {
+  this.model = new app.Search(this.el.$keyword.val(), this);
+  this.model.getData();
+};
+app.SearchView.prototype.appendImage = function (image) {
+  this.el.$feed.append(image.linkElement);
+  this.el.$feed.find('a').fancybox();
+};
+app.SearchView.prototype.listen = function () {
+  var self = this;
+  // create new searches
+  this.el.$search.click(function(){
+    self.createSearch();
+  });
+  // clear input and feed
+  this.el.$keyword.focus(function(){
+    self.el.$feed.html('');
+    self.el.$keyword.val('');
+  });
+};
+
 $(document).ready(function(){
-  
-  // Clears results on typing serach term.
-
-  $('input#keyword').focus(function(){
-    $('#feed').html('');  
-  });
-  
-  // Search flicker API
-
-  $('button#search').click(function(){
-    var keyw = $('input#keyword').val(); //retrieves keyword(s) typed.
-            
-    $.getJSON('http://api.flickr.com/services/rest/?format=json&method=flickr.photos.search&api_key=2fd41b49fedfd589dc265350521ab539&tags='+keyw+'&jsoncallback=?',function(data){ //display JSON feed using keyword(s) typed
-    
-      console.log(data); //see if results came in...
-    
-      $.each(data.photos.photo, function(i,photo){
-      
-        content = '<a rel="fancy-gallery" href="http://farm'+photo.farm+'.staticflickr.com/'+photo.server+'/'+photo.id+'_'+photo.secret+'.jpg"><img src="http://farm'+photo.farm+'.staticflickr.com/'+photo.server+'/'+photo.id+'_'+photo.secret+'_s.jpg"></a>';     
-        $(content).appendTo("#feed"); //displays each result inside feed div above.                  
-      });
-
-      $('#feed a').fancybox();
-    });   
-  });
-    
+  new app.SearchView(); // spin up a new search view.
 });
-
-/*
-
-API url: 
-
-http://www.flickr.com/services/api/request.rest.html
-
-AJAX request URLwith tags=cat (search term = cat):
-
-http://api.flickr.com/services/rest/?format=json&method=flickr.photos.search&api_key=2fd41b49fedfd589dc265350521ab539&tags=cat&jsoncallback=?
-
-JSON Snippet:
-
-{
-    "photos": {
-        "page": 1,
-        "pages": 46641,
-        "perpage": 100,
-        "total": "4664056",
-        "photo": [
-            {
-                "id": "7790251192",
-                "owner": "80992738@N00",
-                "secret": "50b0af1b38",
-                "server": "8440",
-                "farm": 9,
-                "title": "Friends",
-                "ispublic": 1,
-                "isfriend": 0,
-                "isfamily": 0
-            },
-
-object property path: 
-
-photos.photo.farm
-photos.photo.server
-photos.photo.id
-photos.photo.secret
-
-info about creating photo url from son data: http://www.flickr.com/services/api/misc.urls.html
-
-http://farm{farm-id}.staticflickr.com/{server-id}/{id}_{secret}.jpg
-
-Example Test:
-
-http://farm9.staticflickr.com/8440/7790251192_50b0af1b38.jpg
-
-*/
