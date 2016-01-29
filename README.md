@@ -54,4 +54,4 @@ Directions at: [http://fancyapps.com/fancybox/](http://fancyapps.com/fancybox/)
 * [Flickr API](https://www.flickr.com/services/api/) - [constructing an image URI](https://www.flickr.com/services/api/misc.urls.html)
 * [Flickr API](https://www.flickr.com/services/api/) - [Making RESTful requests](https://www.flickr.com/services/api/request.rest.html)
 
-<a href='https://learn.co/lessons/flickr-image-search' data-visibility='hidden'>View this lesson on Learn.co</a>
+<p data-visibility='hidden'>View <a href='https://learn.co/lessons/flickr-image-search' title='Flickr Image Search'>Flickr Image Search</a> on Learn.co and start learning to code for free.</p>
